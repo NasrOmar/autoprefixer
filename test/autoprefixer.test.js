@@ -54,6 +54,9 @@ let ffgradienter = autoprefixer({
 let selectorer = autoprefixer({
   overrideBrowserslist: ['Chrome 25', 'Firefox > 17', 'IE 10', 'Edge 12']
 })
+let transitionSpec = autoprefixer({
+  overrideBrowserslist: ['Chrome > 19', 'Firefox 14', 'IE 10', 'Opera 12']
+})
 let intrinsicer = autoprefixer({
   overrideBrowserslist: ['Chrome 25', 'Firefox 22', 'Safari 10']
 })
@@ -134,6 +137,8 @@ function prefixer (name) {
     return supporter
   } else if (name === 'overscroll-behavior') {
     return overscroller
+  } else if (name === 'transition-spec') {
+    return transitionSpec
   } else {
     return compiler
   }
@@ -175,10 +180,10 @@ afterEach(() => {
 it('throws on wrong options', () => {
   expect(() => {
     autoprefixer({ browser: ['chrome 25', 'opera 12'] })
-  }).toThrowError(/overrideBrowserslist/)
+  }).toThrow(/overrideBrowserslist/)
   expect(() => {
     autoprefixer({ browserslist: ['chrome 25', 'opera 12'] })
-  }).toThrowError(/overrideBrowserslist/)
+  }).toThrow(/overrideBrowserslist/)
 })
 
 let options = {
@@ -255,6 +260,7 @@ it('uses ignore next control comments', () => check('ignore-next'))
 it('uses block control comments', () => check('disabled'))
 it('has actual example in docs', () => check('example'))
 it('process grouping rules correctly', () => check('grouping-rule'))
+it('transition on vendor specific rule', () => check('transition-spec'))
 
 it('uses control comments to whole scope', () => {
   let input = read('scope')
@@ -390,13 +396,13 @@ it('parses difficult files', () => {
 it('marks parsing errors', () => {
   expect(() => {
     postcss([cleaner]).process('a {').css
-  }).toThrowError('<css input>:1:1: Unclosed block')
+  }).toThrow('<css input>:1:1: Unclosed block')
 })
 
 it('shows file name in parse error', () => {
   expect(() => {
     postcss([cleaner]).process('a {', { from: 'a.css' }).css
-  }).toThrowError(/a.css:1:1: /)
+  }).toThrow(/a.css:1:1: /)
 })
 
 it('uses browserslist config', () => {
@@ -529,12 +535,12 @@ it('uses browserslist config in inspect', () => {
 it('ignores unknown versions on request', () => {
   expect(() => {
     autoprefixer({ overrideBrowserslist: ['ie 100'] }).info()
-  }).toThrowError()
+  }).toThrow(/Unknown version 100 of ie/)
   expect(() => {
     autoprefixer({
       overrideBrowserslist: ['ie 100'], ignoreUnknownVersions: true
     }).info()
-  }).not.toThrowError()
+  }).not.toThrow()
 })
 
 describe('hacks', () => {
